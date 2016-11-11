@@ -7,8 +7,9 @@ import model.AccueilModel;
 import view.Accueil;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class ControlMenu {
+public class ControlMenu implements ActionListener {
 
     /* Accueil */
 
