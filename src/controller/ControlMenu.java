@@ -25,6 +25,14 @@ public class ControlMenu implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == accueil.couperson){
 
+        }
+        if(e.getSource() == accueil.quit){
+            System.exit(0);
+        }
+        if(e.getSource() == accueil.credit){
+
+        }
     }
 }

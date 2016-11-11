@@ -35,17 +35,17 @@ public class Accueil extends JFrame{
 
         /* JButton */
 
-    protected JButton newgame;
-    protected JButton option;
-    protected JButton exit;
+    public JButton newgame;
+    public JButton option;
+    public JButton exit;
 
         /*JMenu*/
 
     protected JMenuBar barMenu;
     protected JMenu options;
-    protected JMenuItem couperson;
-    protected JMenuItem quit;
-    protected JMenu credit;
+    public JMenuItem couperson;
+    public JMenuItem quit;
+    public JMenu credit;
 
     public Accueil(AccueilModel accueilModel){
         this.accueilModel = accueilModel;
@@ -53,6 +53,7 @@ public class Accueil extends JFrame{
         controlMenu = new ControlMenu(this, accueilModel);
         initAttribut();
         creerMenu();
+        creerWidget();
         pack();
         setVisible(true);	                             // Affiche la fenetre
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  // Ferme avec la croix
@@ -77,10 +78,18 @@ public class Accueil extends JFrame{
 
         newgame = new JButton("Nouvelle partie");
         option = new JButton("Options");
-        exit = new JButton("Quiiter");
+        exit = new JButton("Quitter");
+
+        newgame.addActionListener(controlBouton);
+        option.addActionListener(controlBouton);
+        exit.addActionListener(controlBouton);
     }
 
     public void creerWidget(){
+
+        haut.setPreferredSize(new Dimension(500,100));
+        millieu.setPreferredSize(new Dimension(500, 100));
+        bas.setPreferredSize(new Dimension(500, 100));
 
         haut.add(newgame);
         millieu.add(option);

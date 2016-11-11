@@ -25,6 +25,14 @@ public class ControlBouton implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e){
+        if(e.getSource() == accueil.newgame){
 
+        }
+        if(e.getSource() == accueil.option){
+
+        }
+        if(e.getSource() == accueil.exit){
+            System.exit(0);
+        }
     }
 }
