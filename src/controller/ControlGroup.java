@@ -3,14 +3,14 @@
  */
 package controller;
 
-import model.AccueilModel;
+import model.ModelAccueil;
 import view.Accueil;
 
 public class ControlGroup {
 
     public ControlGroup() {
-        AccueilModel accueilModel = new AccueilModel(false);
-        Accueil accueil = new Accueil(accueilModel);
+        ModelAccueil modelAccueil = new ModelAccueil(false);
+        Accueil accueil = new Accueil(modelAccueil);
 
     }
 }

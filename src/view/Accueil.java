@@ -5,7 +5,7 @@ package view;
 
 import controller.ControlBouton;
 import controller.ControlMenu;
-import model.AccueilModel;
+import model.ModelAccueil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +14,7 @@ public class Accueil extends JFrame{
 
         /* Model Accueil */
 
-    protected AccueilModel accueilModel;
+    protected ModelAccueil modelAccueil;
 
         /* Control Accueil */
 
@@ -47,10 +47,10 @@ public class Accueil extends JFrame{
     public JMenuItem quit;
     public JMenu credit;
 
-    public Accueil(AccueilModel accueilModel){
-        this.accueilModel = accueilModel;
-        controlBouton = new ControlBouton(this, accueilModel);
-        controlMenu = new ControlMenu(this, accueilModel);
+    public Accueil(ModelAccueil modelAccueil){
+        this.modelAccueil = modelAccueil;
+        controlBouton = new ControlBouton(this, modelAccueil);
+        controlMenu = new ControlMenu(this, modelAccueil);
         initAttribut();
         creerMenu();
         creerWidget();

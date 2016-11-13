@@ -3,7 +3,7 @@
  */
 package controller;
 
-import model.AccueilModel;
+import model.ModelAccueil;
 import view.Accueil;
 
 import java.awt.event.ActionEvent;
@@ -17,11 +17,11 @@ public class ControlMenu implements ActionListener {
 
     /* Model accueil */
 
-    protected AccueilModel accueilModel;
+    protected ModelAccueil modelAccueil;
 
-    public ControlMenu(Accueil accueil, AccueilModel accueilModel){
+    public ControlMenu(Accueil accueil, ModelAccueil modelAccueil){
         this.accueil = accueil;
-        this.accueilModel = accueilModel;
+        this.modelAccueil = modelAccueil;
     }
 
     public void actionPerformed(ActionEvent e) {

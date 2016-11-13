@@ -3,11 +3,11 @@
  */
 package model;
 
-public class AccueilModel {
+public class ModelAccueil {
 
     private boolean etatPartieJME;
 
-    public AccueilModel(boolean etatJME){
+    public ModelAccueil(boolean etatJME){
         etatPartieJME = etatJME;
     }
 }
