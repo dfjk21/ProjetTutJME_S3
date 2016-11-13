@@ -5,7 +5,9 @@ package model;
 
 public class AccueilModel {
 
-    public AccueilModel(){
+    private boolean etatPartieJME;
 
+    public AccueilModel(boolean etatJME){
+        etatPartieJME = etatJME;
     }
 }
