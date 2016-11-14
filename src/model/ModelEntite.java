@@ -99,7 +99,7 @@ public class ModelEntite {
         niveau++;
 
         if((vie / 2) % 2 != 0){
-            vie = vie + vie/2 + 1;
+            vie = vie + (vie + 1)/2;
         }
         else{
             vie = vie + vie/2;
