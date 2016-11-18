@@ -5,6 +5,7 @@ package controller;
 
 import model.ModelAccueil;
 import view.Accueil;
+import view.JME;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,7 +27,7 @@ public class ControlBouton implements ActionListener {
 
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == accueil.newgame){
-
+            newGame(e);
         }
         if(e.getSource() == accueil.option){
 
@@ -34,5 +35,18 @@ public class ControlBouton implements ActionListener {
         if(e.getSource() == accueil.exit){
             System.exit(0);
         }
+    }
+
+    protected static void newGame(ActionEvent e) {
+
+        Thread t = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                JME jme = new JME();//This would be your jME app extending SimpleApplication
+                jme.start();
+            }
+        });
+        t.start();
     }
 }
