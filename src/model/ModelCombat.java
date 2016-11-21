@@ -21,7 +21,7 @@ public class ModelCombat {
           degats = force - plus;
         }
         else{
-          degats = force + plus;
+          degats = force + (plus-force/4);
         }
         if(degats == 0){
           degats = 1;
