@@ -23,7 +23,7 @@ public class ModelCombat {
         else{
           degats = force + (plus-force/4);
         }
-        if(degats == 0){
+        if(degats <= 0){
           degats = 1;
         }
         
@@ -32,5 +32,12 @@ public class ModelCombat {
           degats = degats + degats*0.5;
         }
         perteVie(degats);
+    }
+  
+    public void attaqueMag(ModelEntite perso){
+        int magie = perso.getMagie();
+        int plus = input.nextInt(magie);
+        int degats = 1;
+        if(plus <= magie/2)
     }
 }
