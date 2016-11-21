@@ -6,12 +6,14 @@ package model;
 public class ModelEntite {
 
     protected int vie;
+    protected int force;
+    protected int magie;
     protected int niveau;
     protected int vieMax = vie;
     protected enum Genre {
         HOMME("un homme"),
         FEMMME("une femme"),
-        NONDEF("Indefinie");
+        NONDEF("Indefini");
 
         private String genre = "";
 
@@ -55,6 +57,14 @@ public class ModelEntite {
     void setVie(int vie){
         this.vie = vie;
     }
+    
+    void setForce(int force){
+        this.force = focre;
+    }
+    
+    void setMagie(int magie){
+        this.magie = magie;
+    }
 
     void setNiveau(int niveau){
         this.niveau = niveau;
@@ -86,7 +96,15 @@ public class ModelEntite {
     int getVie(){
         return vie;
     }
+    
+    int getForce(){
+        return force;
+    }
 
+    int getMagie(){
+        return magie;
+    }
+    
     int getNiveau(){
         return niveau;
     }
