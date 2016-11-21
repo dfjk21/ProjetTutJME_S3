@@ -9,6 +9,8 @@ public class ModelEntite {
     protected int vie;
     protected int force;
     protected int magie;
+    protected int defencePhy;
+    protected int defenceMag;
     protected int niveau;
     protected int vieMax = vie;
     protected enum Genre {
@@ -66,6 +68,14 @@ public class ModelEntite {
         this.force = focre;
     }
     
+    void setDefencePhy(int defencePhy){
+        this.defencePhy = defencePhy;
+    }
+    
+    void setDefenceMag(int defenceMag){
+        this.defenceMag = defenceMag;
+    }
+    
     void setMagie(int magie){
         this.magie = magie;
     }
@@ -99,6 +109,14 @@ public class ModelEntite {
 
     int getVie(){
         return vie;
+    }
+    
+    int getDefPhy(){
+        return defencePhy;
+    }
+    
+    int getDefMag(){
+        return defenceMag;
     }
     
     int getForce(){
