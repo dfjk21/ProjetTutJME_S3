@@ -1,4 +1,5 @@
 package model;
+import java.util.Random;
 
 /**
  * Created by raphael on 11/11/16.
@@ -25,12 +26,15 @@ public class ModelEntite {
             return genre;
         }
     }
+    Random input = new Random();
     protected String nom;
     Genre baseGenre = Genre.NONDEF;
     Genre genre;
 
     ModelEntite(String nom){
         vie = 150;
+        force = input.nextInt(20);
+        magie = input.nextInt(30);
         niveau = 1;
         this.nom = nom;
         this.genre = baseGenre;
