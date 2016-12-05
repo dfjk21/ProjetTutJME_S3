@@ -4,6 +4,10 @@ package view;
  * Created by charly on 18/11/16.
  */
 
+import com.jme3.animation.AnimChannel;
+import com.jme3.animation.AnimControl;
+import com.jme3.animation.AnimEventListener;
+import com.jme3.animation.LoopMode;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
@@ -11,16 +15,20 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
+import com.jme3.collision.CollisionResult;
+import com.jme3.collision.CollisionResults;
+import com.jme3.font.BitmapText;
 import com.jme3.input.ChaseCamera;
 import com.jme3.input.KeyInput;
+import com.jme3.input.MouseInput;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.InputListener;
 import com.jme3.input.controls.KeyTrigger;
+import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector3f;
+import com.jme3.math.*;
 import com.jme3.scene.CameraNode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -32,11 +40,14 @@ import com.jme3.terrain.geomipmap.TerrainQuad;
 import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.texture.Texture;
+import model.ModelHero;
+import org.lwjgl.Sys;
+
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class JME extends SimpleApplication implements ActionListener, InputListener {
+public class JME extends SimpleApplication implements ActionListener, InputListener, AnimEventListener {
 
     private Spatial sceneModel;
     private BulletAppState bulletAppState; //accés à la physique
@@ -47,6 +58,9 @@ public class JME extends SimpleApplication implements ActionListener, InputListe
     private boolean isRunning = true;
     private boolean left = false, right = false, forward = false, back = false, leftCam = false, rightCam = false, up = false, down = false;
     private TerrainQuad terrain;
+    private Node cliquable;
+    private AnimChannel channel;
+    private AnimControl control;
     Material mat_terrain;
 
     private Vector3f camDir = new Vector3f();
@@ -67,61 +81,12 @@ public class JME extends SimpleApplication implements ActionListener, InputListe
         setUpKeys();
         initKeys();
         setUpLight();
+        initCrossHairs();
+        createTerrain();
 
-        mat_terrain = new Material(assetManager,
-                "Common/MatDefs/Terrain/Terrain.j3md");
-
-        mat_terrain.setTexture("Alpha", assetManager.loadTexture(
-                "Textures/Terrain/splat/alphamap.png"));
-
-        Texture grass = assetManager.loadTexture(
-                "Textures/Terrain/splat/grass.jpg");
-        grass.setWrap(Texture.WrapMode.Repeat);
-        mat_terrain.setTexture("Tex1", grass);
-        mat_terrain.setFloat("Tex1Scale", 64f);
-
-        Texture dirt = assetManager.loadTexture(
-                "Textures/Terrain/splat/dirt.jpg");
-        dirt.setWrap(Texture.WrapMode.Repeat);
-        mat_terrain.setTexture("Tex2", dirt);
-        mat_terrain.setFloat("Tex2Scale", 32f);
-
-        Texture rock = assetManager.loadTexture(
-                "Textures/Terrain/splat/road.jpg");
-        rock.setWrap(Texture.WrapMode.Repeat);
-        mat_terrain.setTexture("Tex3", rock);
-        mat_terrain.setFloat("Tex3Scale", 128f);
-
-        AbstractHeightMap heightmap = null;
-        Texture heightMapImage = assetManager.loadTexture(
-                "Textures/Terrain/splat/mountains512.png");
-        heightmap = new ImageBasedHeightMap(heightMapImage.getImage());
-        heightmap.load();
-
-        /** 3. We have prepared material and heightmap.
-         * Now we create the actual terrain:
-         * 3.1) Create a TerrainQuad and name it "my terrain".
-         * 3.2) A good value for terrain tiles is 64x64 -- so we supply 64+1=65.
-         * 3.3) We prepared a heightmap of size 512x512 -- so we supply 512+1=513.
-         * 3.4) As LOD step scale we supply Vector3f(1,1,1).
-         * 3.5) We supply the prepared heightmap itself.
-         */
-        int patchSize = 65;
-        terrain = new TerrainQuad("my terrain", patchSize, 513, heightmap.getHeightMap());
-
-        terrain.setMaterial(mat_terrain);
-        terrain.setLocalTranslation(476.5f, -7.65f, 0);
-        terrain.setLocalScale(2f, 1f, 2f);
-        rootNode.attachChild(terrain);
-
-        TerrainLodControl control = new TerrainLodControl(terrain, getCamera());
-        terrain.addControl(control);
-
-        sceneModel = terrain;
-
-        CollisionShape sceneShape = CollisionShapeFactory.createMeshShape((Node) sceneModel);
-        map = new RigidBodyControl(sceneShape, 0);
-        sceneModel.addControl(map);
+        cliquable = new Node("Cliquable");
+        rootNode.attachChild(cliquable);
+        cliquable.attachChild(makeCharacter());
 
         CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 6f, 1);
 
@@ -134,6 +99,21 @@ public class JME extends SimpleApplication implements ActionListener, InputListe
         rootNode.attachChild(sceneModel);
         bulletAppState.getPhysicsSpace().add(map);
         bulletAppState.getPhysicsSpace().add(player);
+    }
+
+    protected Spatial makeCharacter() {
+        Spatial golem = assetManager.loadModel("Models/Oto/Oto.mesh.xml");
+        golem.scale(0.5f);
+        golem.setLocalTranslation(2f, -1.0f, -20f);
+        golem.rotate(0f, -50f, 0f);
+        DirectionalLight sun = new DirectionalLight();
+        sun.setDirection(new Vector3f(-0.1f, -0.7f, -1.0f));
+        golem.addLight(sun);
+        control = golem.getControl(AnimControl.class);
+        control.addListener(this);
+        channel = control.createChannel();
+        channel.setAnim("stand");
+        return golem;
     }
 
     private void setUpLight() {
@@ -165,8 +145,9 @@ public class JME extends SimpleApplication implements ActionListener, InputListe
         inputManager.addMapping("Forward", new KeyTrigger(KeyInput.KEY_Z));
         inputManager.addMapping("Back", new KeyTrigger(KeyInput.KEY_S));
         inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
-        inputManager.addListener(actionListener, new String[]{"Pause"});
-        inputManager.addListener(analogListener, new String[]{"Forward", "Back", "Left", "Right", "Jump"});
+        inputManager.addMapping("Click", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
+        inputManager.addListener(actionListener, "Pause", "Click");
+        inputManager.addListener(analogListener, "Forward", "Back", "Left", "Right", "Jump");
     }
 
     public void onAction(String binding, boolean isPressed, float tpf){
@@ -181,6 +162,15 @@ public class JME extends SimpleApplication implements ActionListener, InputListe
         }
         else if(binding.equals("Back")){
             down = isPressed;
+        }
+    }
+
+    @Override
+    public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName) {
+        if(animName.equals("Walk")){
+            channel.setAnim("stand", 0.50f);
+            channel.setLoopMode(LoopMode.DontLoop);
+            channel.setSpeed(1f);
         }
     }
 
@@ -207,12 +197,28 @@ public class JME extends SimpleApplication implements ActionListener, InputListe
         player.setWalkDirection(walkDirection);
         player.setViewDirection(viewDirection);
         cam.setLocation(player.getPhysicsLocation());
+        inputManager.setCursorVisible(true);
     }
 
     private com.jme3.input.controls.ActionListener actionListener = new com.jme3.input.controls.ActionListener() {
         public void onAction(String name, boolean keyPressed, float tpf) {
             if (name.equals("Pause") && !keyPressed) {
                 isRunning = !isRunning;
+            }
+            if(name.equals("Click") && keyPressed){
+                CollisionResults results = new CollisionResults();
+                Vector2f click2d = inputManager.getCursorPosition();
+                Vector3f click3d = cam.getWorldCoordinates(
+                        new Vector2f(click2d.x, click2d.y), 0f).clone();
+                Vector3f dir = cam.getWorldCoordinates(
+                        new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
+                Ray ray = new Ray(click3d, dir);
+                cliquable.collideWith(ray, results);
+                System.out.println("Bonjour voyageur !");
+                if(!channel.getAnimationName().equals("Walk")){
+                    channel.setAnim("Walk", 0.50f);
+                    channel.setLoopMode(LoopMode.Cycle);
+                }
             }
         }
     };
@@ -254,8 +260,74 @@ public class JME extends SimpleApplication implements ActionListener, InputListe
         }
     };
 
+    private void createTerrain(){
+        mat_terrain = new Material(assetManager,
+                "Common/MatDefs/Terrain/Terrain.j3md");
+
+        mat_terrain.setTexture("Alpha", assetManager.loadTexture(
+                "Textures/Terrain/splat/alphamap.png"));
+
+        Texture grass = assetManager.loadTexture(
+                "Textures/Terrain/splat/grass.jpg");
+        grass.setWrap(Texture.WrapMode.Repeat);
+        mat_terrain.setTexture("Tex1", grass);
+        mat_terrain.setFloat("Tex1Scale", 64f);
+
+        Texture dirt = assetManager.loadTexture(
+                "Textures/Terrain/splat/dirt.jpg");
+        dirt.setWrap(Texture.WrapMode.Repeat);
+        mat_terrain.setTexture("Tex2", dirt);
+        mat_terrain.setFloat("Tex2Scale", 32f);
+
+        Texture rock = assetManager.loadTexture(
+                "Textures/Terrain/splat/road.jpg");
+        rock.setWrap(Texture.WrapMode.Repeat);
+        mat_terrain.setTexture("Tex3", rock);
+        mat_terrain.setFloat("Tex3Scale", 128f);
+
+        AbstractHeightMap heightmap = null;
+        Texture heightMapImage = assetManager.loadTexture(
+                "Textures/Terrain/splat/mountains512.png");
+        heightmap = new ImageBasedHeightMap(heightMapImage.getImage());
+        heightmap.load();
+
+        int patchSize = 65;
+        terrain = new TerrainQuad("my terrain", patchSize, 513, heightmap.getHeightMap());
+
+        terrain.setMaterial(mat_terrain);
+        terrain.setLocalTranslation(476.5f, -7.65f, 0);
+        terrain.setLocalScale(2f, 1f, 2f);
+        rootNode.attachChild(terrain);
+
+        TerrainLodControl control = new TerrainLodControl(terrain, getCamera());
+        terrain.addControl(control);
+
+        sceneModel = terrain;
+
+        CollisionShape sceneShape = CollisionShapeFactory.createMeshShape((Node) sceneModel);
+        map = new RigidBodyControl(sceneShape, 0);
+        sceneModel.addControl(map);
+    }
+
+    protected void initCrossHairs() {
+        setDisplayStatView(false);
+        guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
+        BitmapText ch = new BitmapText(guiFont, false);
+        ch.setSize(guiFont.getCharSet().getRenderedSize() * 2);
+        ch.setText("+"); // crosshairs
+        ch.setLocalTranslation( // center
+                settings.getWidth() / 2 - ch.getLineWidth()/2, settings.getHeight() / 2 + ch.getLineHeight()/2, 0);
+        guiNode.attachChild(ch);
+    }
+
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
+
+
+    }
+
+    @Override
+    public void onAnimChange(AnimControl control, AnimChannel channel, String animName) {
 
     }
 }
