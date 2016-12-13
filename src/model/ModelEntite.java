@@ -60,7 +60,7 @@ public class ModelEntite {
         this.niveau = niveau;
     }
 
-    void setGenre(int i){
+    public void setGenre(int i){
         if(i <= 3 && i > 0){
             switch (i){
                 case 1 :

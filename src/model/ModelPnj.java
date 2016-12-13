@@ -26,15 +26,18 @@ public class ModelPnj extends ModelEntite{
     }
     Metier baseMetier = Metier.BASEMETIER;
     Metier metier;
+    ModelQuete quete;
 
-    ModelPnj(String nom){
+    public ModelPnj(String nom){
         super(nom);
         this.metier = baseMetier;
+        this.quete = null;
     }
 
-    ModelPnj(int vie, int niveau, String nom){
+    public ModelPnj(int vie, int niveau, String nom){
         super(vie,niveau,nom);
         this.metier = baseMetier;
+        this.quete = null;
     }
 
     void setMetier(int i){
@@ -68,6 +71,14 @@ public class ModelPnj extends ModelEntite{
         else{
             System.out.println("Vous ne pouvez pas mettre un nombre supérieur à 6 ou inferieur à 0");
         }
+    }
+
+    public void ajoutQuete(ModelQuete quete){
+        this.quete = quete;
+    }
+
+    public void printQuete(){
+        quete.print();
     }
 
     public void print() {

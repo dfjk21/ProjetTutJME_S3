@@ -27,17 +27,17 @@ public class ModelHero extends ModelEntite {
     Classe baseIntitule = Classe.BASECLASSE;
     Classe classe;
 
-    ModelHero(String nom){
+    public ModelHero(String nom){
         super(nom);
         this.classe = baseIntitule;
     }
 
-    ModelHero(int vie, int niveau, String nom){
+    public ModelHero(int vie, int niveau, String nom){
         super(vie,niveau,nom);
         this.classe = baseIntitule;
     }
 
-    void setClasse(int i){
+    public void setClasse(int i){
         if(i <= 5 && i > 0){
             switch (i){
                 case 1 :

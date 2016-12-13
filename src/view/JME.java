@@ -29,21 +29,14 @@ import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.*;
-import com.jme3.scene.CameraNode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.control.CameraControl;
-import com.jme3.scene.shape.Box;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.texture.Texture;
-import model.ModelHero;
-import org.lwjgl.Sys;
-
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -61,6 +54,7 @@ public class JME extends SimpleApplication implements ActionListener, InputListe
     private Node cliquable;
     private AnimChannel channel;
     private AnimControl control;
+
     Material mat_terrain;
 
     private Vector3f camDir = new Vector3f();
@@ -77,7 +71,7 @@ public class JME extends SimpleApplication implements ActionListener, InputListe
         stateManager.attach(bulletAppState);
 
         viewPort.setBackgroundColor(new ColorRGBA(0.7f,0.8f,1f,1f));
-        flyCam.setMoveSpeed(100);
+        //flyCam.setMoveSpeed(100);
         setUpKeys();
         initKeys();
         setUpLight();
@@ -103,6 +97,7 @@ public class JME extends SimpleApplication implements ActionListener, InputListe
 
     protected Spatial makeCharacter() {
         Spatial golem = assetManager.loadModel("Models/Oto/Oto.mesh.xml");
+        golem.setName("golem");
         golem.scale(0.5f);
         golem.setLocalTranslation(2f, -1.0f, -20f);
         golem.rotate(0f, -50f, 0f);
@@ -113,6 +108,7 @@ public class JME extends SimpleApplication implements ActionListener, InputListe
         control.addListener(this);
         channel = control.createChannel();
         channel.setAnim("stand");
+        bulletAppState.getPhysicsSpace().addAll(golem);
         return golem;
     }
 
@@ -174,7 +170,6 @@ public class JME extends SimpleApplication implements ActionListener, InputListe
         }
     }
 
-    /* This is the update loop */
     @Override
     public void simpleUpdate(float tpf) {
         camDir.set(cam.getDirection()).multLocal(0.6f);
@@ -197,7 +192,7 @@ public class JME extends SimpleApplication implements ActionListener, InputListe
         player.setWalkDirection(walkDirection);
         player.setViewDirection(viewDirection);
         cam.setLocation(player.getPhysicsLocation());
-        inputManager.setCursorVisible(true);
+        //inputManager.setCursorVisible(true);
     }
 
     private com.jme3.input.controls.ActionListener actionListener = new com.jme3.input.controls.ActionListener() {
@@ -322,7 +317,6 @@ public class JME extends SimpleApplication implements ActionListener, InputListe
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
-
 
     }
 
