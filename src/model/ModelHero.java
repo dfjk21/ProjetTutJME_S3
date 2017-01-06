@@ -75,4 +75,8 @@ public class ModelHero extends ModelEntite {
             System.out.println("Ce personnage s'apelle "+nom+", c'est "+genre+" "+classe+" de niveau "+niveau+" et possede "+vie+" points de vie.");
         }
     }
+
+    public Classe getClasse() {
+        return classe;
+    }
 }

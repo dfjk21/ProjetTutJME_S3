@@ -83,15 +83,23 @@ public class ModelEntite {
         this.nom = nom;
     }
 
-    int getVie(){
+    public int getVie(){
         return vie;
     }
 
-    int getNiveau(){
+    public int getVieMax() {
+        return vieMax;
+    }
+
+    public Genre getGenre() {
+        return genre;
+    }
+
+    public int getNiveau(){
         return niveau;
     }
 
-    String getNom(){
+    public String getNom(){
         return nom;
     }
 
