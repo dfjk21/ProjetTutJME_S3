@@ -43,21 +43,41 @@ public class ModelHero extends ModelEntite {
                 case 1 :
                     classe = Classe.ASSASSIN;
                     vie = 300;
+                    this.setDefenceMag(10);
+                    this.setDefencePhy(6);
+                    this.setForce(20);
+                    this.setMagie(8);
                     break;
                 case 2 :
                     classe = Classe.GUERRIER;
                     vie = 500;
+                    this.setDefenceMag(15);
+                    this.setDefencePhy(20);
+                    this.setForce(8);
+                    this.setMagie(4);
                     break;
                 case 3 :
                     classe = Classe.MAGE;
                     vie = 250;
+                    this.setDefenceMag(15);
+                    this.setDefencePhy(8);
+                    this.setForce(6);
+                    this.setMagie(25);
                     break;
                 case 4 :
                     classe = Classe.TRAVELERS;
                     vie = 350;
+                    this.setDefenceMag(10);
+                    this.setDefencePhy(8);
+                    this.setForce(14);
+                    this.setMagie(10);
                     break;
                 case 5 :
                     classe = Classe.BASECLASSE;
+                    this.setDefenceMag(10);
+                    this.setDefencePhy(10);
+                    this.setForce(8);
+                    this.setMagie(8);
                     break;
             }
         }
