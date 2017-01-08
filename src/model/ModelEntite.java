@@ -6,8 +6,12 @@ package model;
 public class ModelEntite {
 
     protected int vie;
-    protected int niveau;
     protected int vieMax = vie;
+    protected int niveau;
+    protected int force;
+    protected int magie;
+    protected int defencePhy;
+    protected int defenceMag;
     protected enum Genre {
         HOMME("un homme"),
         FEMMME("une femme"),
@@ -101,6 +105,22 @@ public class ModelEntite {
 
     public String getNom(){
         return nom;
+    }
+
+    int getDefPhy(){
+        return defencePhy;
+    }
+
+    int getDefMag(){
+        return defenceMag;
+    }
+
+    int getForce(){
+        return force;
+    }
+
+    int getMagie(){
+        return magie;
     }
 
     public void gainNiveau(){
